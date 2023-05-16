@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <header>
-            <h1><a class="no-style-link" href="http://localhost:8080/">Illust Shop</a></h1>
+            <h1><a class="no-style-link" href="https://illustshop.onrender.com">Illust Shop</a></h1>
         </header>
         <div class="content">
             <aside>
@@ -30,7 +30,7 @@ export default {
         };
     },
     created() {
-        fetch("http://127.0.0.1:8000/api/products/categories")
+        fetch("https://illustshop-backend.onrender.com/api/products/categories")
             .then(response => response.json())
             .then(data => { this.categories = data })
             .catch(error => console.log(error))

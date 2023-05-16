@@ -56,7 +56,7 @@ export default {
     },
     methods: {
         async fetchProductInfo(category) {
-            return await fetch("http://127.0.0.1:8000/api/products/by_category_name/" + category)
+            return await fetch("https://illustshop-backend.onrender.com/api/products/by_category_name/" + category)
                 .then(response => response.json())
                 .catch(error => console.log(error))
         },
