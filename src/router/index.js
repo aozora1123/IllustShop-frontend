@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
-import ProductList from '../components/ProductList';
+
+import HomeView from '@/views/HomeView.vue'
+import SelectProduct from '@/components/SelectProduct.vue'
+import NotFound from '@/components/NotFound.vue'
 
 const routes = [
   {
@@ -18,9 +20,12 @@ const routes = [
   },
   {
     path: "/products/:category",
-    component: ProductList
-  }
-
+    component: SelectProduct
+  },
+  {
+    // will match everything and put it under `$route.params.pathMatch`
+    path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFound
+  },
 ]
 
 const router = createRouter({
