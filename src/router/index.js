@@ -1,14 +1,14 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-import HomeView from '@/views/HomeView.vue'
-import SelectProduct from '@/components/SelectProduct.vue'
+import IndexPage from '@/components/IndexPage.vue'
 import NotFound from '@/components/NotFound.vue'
 
 const routes = [
   {
     path: '/',
-    name: 'home',
-    component: HomeView
+    name: 'index',
+    alias: '/index',
+    component: IndexPage,
   },
   {
     path: '/about',
@@ -19,12 +19,21 @@ const routes = [
     component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
   },
   {
-    path: "/products/:category",
-    component: SelectProduct
+    path: '/products',
+    name: 'products',
+    component: () => import(/* webpackChunkName: "product" */ '@/components/ProductPage.vue'),
+    children: [
+      {
+        path: ':category',
+        component: () => import(/* webpackChunkName: "product" */ '@/components/SelectProduct.vue'),
+      },
+    ],
   },
   {
-    // will match everything and put it under `$route.params.pathMatch`
-    path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFound
+    // 非指定的路由位址，皆對應到NotFound
+    path: '/:pathMatch(.*)*', // will match everything and put it under `$route.params.pathMatch`
+    name: 'NotFound',
+    component: NotFound
   },
 ]
 

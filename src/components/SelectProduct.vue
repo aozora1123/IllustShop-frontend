@@ -2,6 +2,9 @@
     <div class="offset-3">
         <div v-if="loading">
             <h1>Loading...</h1>
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
         </div>
         <div v-else>
             <div v-if="productInfo.length > 0">
@@ -21,11 +24,18 @@
                         </div>
                     </div>
                 </div>
-                <ul class="float-end">
-                    <li v-for="(page, index) in pages" :key="index" class="float-start" style="list-style-type: none;">
-                        <button @click="changePage(index)" :class="{ 'active': isActive[index] }">{{ index + 1 }}</button>
-                    </li>
-                </ul>
+                
+                <nav aria-label="Page navigation">
+                    <div class="btn-toolbar mb-3 justify-content-end" role="toolbar" aria-label="Toolbar with button groups">
+                        <div class="btn-group me-2" role="group" aria-label="First group">
+                            <button v-for="(page, index) in pages" :key="index" type="button"
+                                class="btn btn-outline-secondary" @click="changePage(index)"
+                                :class="{ 'active': isActive[index] }">
+                                {{ index + 1 }}
+                            </button>
+                        </div>
+                    </div>
+                </nav>
             </div>
             <div v-else>
                 <h1> 很抱歉，{{ category }} 分類尚無貼圖</h1>
@@ -34,7 +44,11 @@
     </div>
 </template>
 <script>
+import ProductMixin from '@/mixins/ProductMixin.js'
 export default {
+    mixins: [
+        ProductMixin,
+    ],
     data() {
         return {
             productInfo: {},
@@ -55,19 +69,13 @@ export default {
     watch: {
         category: async function (val) {
             this.loading = true;
-            const apiHost = process.env.VUE_APP_API_HOST;
-            this.productInfo = await this.fetchProductInfo(apiHost, val)
+            this.productInfo = await this.fetchProductInfo(val)
             this.loading = false;
             this.changePage(0);
             this.pages = await this.getPages();
         }
     },
     methods: {
-        async fetchProductInfo(apiHost, category) {
-            return await fetch(`${apiHost}/api/products/by_category_name/${category}`)
-                .then(response => response.json())
-                .catch(error => console.log(error))
-        },
         async getPages() {
             const productsPerPage = 6;
             const pageCount = Math.ceil(this.productInfo.length / productsPerPage);
@@ -84,8 +92,7 @@ export default {
         }
     },
     async created() {
-        const apiHost = process.env.VUE_APP_API_HOST;
-        this.productInfo = await this.fetchProductInfo(apiHost, this.category);
+        this.productInfo = await this.fetchProductInfo(this.category);
         this.loading = false;
         this.pageIndex = 0;
         this.pages = await this.getPages();
