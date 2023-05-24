@@ -25,13 +25,13 @@
 
 <script>
 import AppHeaderComponent from '@/components/AppHeader.vue';
-import ProductMixin from '@/mixins/ProductMixin.js'
+import productMixin from '@/mixins/productMixin.js'
 export default {
     components: {
         AppHeaderComponent,
     },
     mixins: [
-        ProductMixin,
+        productMixin,
     ],  
 }
 </script>

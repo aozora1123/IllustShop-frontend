@@ -27,6 +27,20 @@
                             </ul>
                         </li>
                     </ul>
+                    <ul class="navbar-nav ms-2 mb-2 mb-lg-0">
+                        <li class="nav-item me-4" v-show="isLogin">
+                            <p class="nav-link text-white fw-bold">{{username}}  您好</p>
+                        </li>
+                        <li class="nav-item" v-show="!isLogin">
+                            <a class="nav-link text-white fw-bold" aria-current="page" href="/register">註冊</a>
+                        </li>
+                        <li class="nav-item" v-show="!isLogin">
+                            <a class="nav-link text-white fw-bold" aria-current="page" href="/login">登入</a>
+                        </li>
+                        <li class="nav-item" v-show="isLogin">
+                            <a class="nav-link text-white fw-bold" aria-current="page" href="#" @click="logout()">登出</a>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </nav>
@@ -34,11 +48,24 @@
 </template>
 
 <script>
-import ProductMixin from '@/mixins/ProductMixin.js'
+import productMixin from '@/mixins/productMixin.js'
+import commonMixin from '@/mixins/commonMixin.js'
 
 export default {
     mixins: [
-        ProductMixin,
+        productMixin,
+        commonMixin,
     ],
+    mounted() {
+        this.checkLoginStatus();
+    },
+    methods: {
+        logout() {
+            this.isLogin = false;
+            window.localStorage.removeItem('username');
+            window.localStorage.removeItem('token');
+            window.location.reload();
+        }
+    },
 }
 </script>

@@ -14,7 +14,7 @@
                         <div class="card d-flex px-1 my-2" style="height: 22rem;">
                             <div class="card-body" style="overflow: hidden;">
                                 <div class="card-text px-2 py-2">
-                                    <img :src="product.imgsrc" class="card-img-top" :alt="product.name"
+                                    <img v-lazy="product.imgsrc" class="card-img-top" :alt="product.name"
                                         style="height: 12rem">
                                     <b>貼圖名稱：</b>
                                     <h5 class="ellipsis" :title="product.name"> {{ product.name }}</h5>
@@ -24,9 +24,10 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <nav aria-label="Page navigation">
-                    <div class="btn-toolbar mb-3 justify-content-end" role="toolbar" aria-label="Toolbar with button groups">
+                    <div class="btn-toolbar mb-3 justify-content-end" role="toolbar"
+                        aria-label="Toolbar with button groups">
                         <div class="btn-group me-2" role="group" aria-label="First group">
                             <button v-for="(page, index) in pages" :key="index" type="button"
                                 class="btn btn-outline-secondary" @click="changePage(index)"
@@ -44,10 +45,10 @@
     </div>
 </template>
 <script>
-import ProductMixin from '@/mixins/ProductMixin.js'
+import productMixin from '@/mixins/productMixin.js'
 export default {
     mixins: [
-        ProductMixin,
+        productMixin,
     ],
     data() {
         return {
