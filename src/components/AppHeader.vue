@@ -37,6 +37,9 @@
                         <li class="nav-item" v-show="!isLogin">
                             <a class="nav-link text-white fw-bold" aria-current="page" href="/login">登入</a>
                         </li>
+                        <li class="nav-item me-4" v-show="isLogin">
+                            <a class="nav-link text-white fw-bold" aria-current="page" href="/cart">購物車</a>
+                        </li>
                         <li class="nav-item" v-show="isLogin">
                             <a class="nav-link text-white fw-bold" aria-current="page" href="#" @click="logout()">登出</a>
                         </li>

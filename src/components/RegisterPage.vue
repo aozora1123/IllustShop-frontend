@@ -61,34 +61,40 @@ export default {
     },
     methods: {
         async onSubmit(e) {
-            e.preventDefault();
-            var errMsg = this.validateUserData();
-            // 前端驗證輸入資料
-            if (errMsg != null) {
-                this.appendAlertElement('liveAlertPlaceholder', errMsg, 'danger')
-            }
-            else {
-                var data = {
-                    "username": this.username,
-                    "password": this.password1
-                }
-                // 後端驗證輸入資料
-                var registerResult = await this.registerAccount(data);
-                if (registerResult.success) {
-                    window.localStorage.setItem('username', registerResult.username)
-                    window.localStorage.setItem('token', registerResult.token)
-                    this.isSuccessful = true;
-                    this.appendAlertElement('liveAlertPlaceholder', '註冊成功! 3秒後自動跳轉至首頁', 'success')
-                    setTimeout(function () {
-                        window.location.href = '/';
-                    }, 3500);
+            try {
+                e.preventDefault();
+                var errMsg = this.validateUserData();
+                // 前端驗證輸入資料
+                if (errMsg != null) {
+                    this.appendAlertElement('liveAlertPlaceholder', errMsg, 'danger')
                 }
                 else {
-                    this.appendAlertElement('liveAlertPlaceholder', registerResult.msg, 'danger')
-                }
+                    var data = {
+                        "username": this.username,
+                        "password": this.password1
+                    }
+                    // 後端驗證輸入資料
+                    var registerResult = await this.registerAccount(data);
+                    if (registerResult.success) {
+                        window.localStorage.setItem('username', registerResult.username)
+                        window.localStorage.setItem('token', registerResult.token)
+                        this.isSuccessful = true;
+                        this.appendAlertElement('liveAlertPlaceholder', '註冊成功! 3秒後自動跳轉至首頁', 'success')
+                        setTimeout(function () {
+                            window.location.href = '/';
+                        }, 3000);
+                    }
+                    else {
+                        this.appendAlertElement('liveAlertPlaceholder', registerResult.msg, 'danger')
+                    }
 
+                }
+                this.resetForm();
             }
-            this.resetForm();
+            catch (error) {
+                alert('Error: ' + error)
+            }
+
         },
         validateUserData() {
             var errMsg = null;

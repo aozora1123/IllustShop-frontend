@@ -4,6 +4,8 @@ export default {
         return {
             username: "",
             isLogin: false,
+            apiHost: process.env.VUE_APP_API_HOST,
+            apiPort: process.env.VUE_APP_API_PORT,
         }
     },
     methods: {

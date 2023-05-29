@@ -40,6 +40,12 @@ const routes = [
     component: () => import(/* webpackChunkName: "account" */ '@/components/LoginPage.vue'),
   },
   {
+    path: '/cart',
+    name: 'cart',
+    meta: { requiresAuth: true }, // 須登入才可存取
+    component: () => import(/* webpackChunkName: "account" */ '@/components/UserCart.vue'),
+  },
+  {
     // 非指定的路由位址，皆對應到NotFound
     path: '/:pathMatch(.*)*', // will match everything and put it under `$route.params.pathMatch`
     name: 'NotFound',

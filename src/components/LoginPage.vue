@@ -83,7 +83,7 @@ export default {
                     this.appendAlertElement('liveAlertPlaceholder', '登入成功! 3秒後自動跳轉至首頁', 'success')
                     setTimeout(function () {
                         window.location.href = '/';
-                    }, 3500);
+                    }, 3000);
                 }
                 else {
                     this.appendAlertElement('liveAlertPlaceholder', loginResult.msg, 'danger')

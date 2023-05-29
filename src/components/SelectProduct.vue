@@ -11,7 +11,7 @@
                 <h2>{{ category }} 分類的貼圖如下：</h2>
                 <div class="row">
                     <div class="col-lg-4 col-md-6 col-sm-10" v-for="(product, index) in productsOnCurrentPage" :key="index">
-                        <div class="card d-flex px-1 my-2" style="height: 22rem;">
+                        <div class="card d-flex px-1 my-2" style="height: 25rem;">
                             <div class="card-body" style="overflow: hidden;">
                                 <div class="card-text px-2 py-2">
                                     <img v-lazy="product.imgsrc" class="card-img-top" :alt="product.name"
@@ -20,7 +20,11 @@
                                     <h5 class="ellipsis" :title="product.name"> {{ product.name }}</h5>
                                 </div>
                             </div>
-                            <p class="price-text px-3">價格: {{ product.price }} P</p>
+                            <div class="justify-content-center">
+                                <p class="price-text">價格: {{ product.price }} P</p>
+                                <button class="btn btn-primary col-8 mx-3 my-1" type="submit"
+                                    @click="addToCart(product.id)">加入購物車</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -46,9 +50,13 @@
 </template>
 <script>
 import productMixin from '@/mixins/productMixin.js'
+import commonMixin from '@/mixins/commonMixin.js'
+import Message from 'vue-simple-notification'
+import 'vue-simple-notification/dist/style.css'
 export default {
     mixins: [
         productMixin,
+        commonMixin
     ],
     data() {
         return {
@@ -70,10 +78,14 @@ export default {
     watch: {
         category: async function (val) {
             this.loading = true;
-            this.productInfo = await this.fetchProductInfo(val)
+            try {
+                this.productInfo = await this.fetchProductInfo(val)
+                this.changePage(0);
+                this.pages = await this.getPages();
+            } catch (error) {
+                alert('Error: ' + error)
+            }
             this.loading = false;
-            this.changePage(0);
-            this.pages = await this.getPages();
         }
     },
     methods: {
@@ -90,6 +102,49 @@ export default {
             this.pageIndex = pageNumber;
             this.isActive.fill(false);
             this.isActive[this.pageIndex] = true; // 標示目前選擇的頁數
+        },
+        addToCart(product_id) {
+            this.checkLoginStatus()
+            if (!this.isLogin) {
+                alert('請先登入');
+            }
+            else {
+                fetch(`${this.apiHost}:${this.apiPort}/api/cart/details`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${window.localStorage.getItem('token')}`
+                    },
+                    body: JSON.stringify({ "product_id": product_id })
+                })
+                    .then(
+                        response => {
+                            return response.json().then(data => {
+                                return {
+                                    statusCode: response.status,
+                                    data: data
+                                };
+
+                            })
+                        })
+                    .then(response => {
+                        if (response.statusCode == 400 && response.data.exist == 'False') {
+                            alert('Error: 未提供product_id');
+                        }
+                        else if (response.statusCode == 404 && response.data.existtt == 'False') {
+                            alert('Error: 商品不存在');
+                        }
+                        else if (response.statusCode == 200 && response.data.exist == 'True') {
+                            Message.info('商品已存在於購物車');
+                        }
+                        else if (response.statusCode == 200 && response.data.exist == 'False') {
+                            Message.success('成功加入購物車');
+                        }
+                    })
+                    .catch(error => {
+                        alert('Error' + error.message);
+                    });
+            }
         }
     },
     async created() {
